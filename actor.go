@@ -1,4 +1,4 @@
-// Package interact provides ways to interact with the user
+// Package interact is a utility belt for interacting with the user over a CLI
 package interact
 
 import (
