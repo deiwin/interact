@@ -6,6 +6,7 @@ A Golang utility belt for interacting with the user over a CLI
 [![GoDoc](https://godoc.org/github.com/deiwin/interact?status.svg)](https://godoc.org/github.com/deiwin/interact)
 
 ## Example interaction
+
 To see how the following interaction can be created see the [example test](https://github.com/deiwin/interact/blob/master/example_test.go).
 
 ```
