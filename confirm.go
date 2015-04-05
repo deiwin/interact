@@ -24,7 +24,7 @@ const (
 // Confirm provides the message to the user and asks yes or no. If the user
 // doesn't select either of the possible answers they will be prompted to answer
 // again until they do
-func (a Actor) Confirm(message string, def ConfirmDefault) (bool, error) {
+func (a Actor) Confirm(message string, def ConfirmDefault) (confirmed bool, err error) {
 	for {
 		confirmed, err := a.confirmOnce(message, def)
 		if err == errNoOptionSelected {
