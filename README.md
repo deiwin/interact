@@ -11,15 +11,18 @@ Code like this:
 ```
 actor := interact.NewActor(os.Stdin, os.Stdout)
 
-notEmpty, err := actor.GetInput("Please enter something that's not empty", checkNotEmpty)
+message := "Please enter something that's not empty"
+notEmpty, err := actor.GetInput(message, checkNotEmpty)
 if err != nil {
   log.Fatal(err)
 }
-n1, err := actor.GetInputAndRetry("Please enter a positive number", checkNotEmpty, checkIsAPositiveNumber)
+message = "Please enter a positive number"
+n1, err := actor.GetInputAndRetry(message, checkNotEmpty, checkIsAPositiveNumber)
 if err != nil {
   log.Fatal(err)
 }
-n2, err := actor.GetInputWithDefaultAndRetry("Please enter another positive number", "7", checkNotEmpty, checkIsAPositiveNumber)
+message = "Please enter another positive number"
+n2, err := actor.GetInputWithDefaultAndRetry(message, "7", checkNotEmpty, checkIsAPositiveNumber)
 if err != nil {
   log.Fatal(err)
 }
