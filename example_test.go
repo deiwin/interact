@@ -39,7 +39,7 @@ func Example() {
 
 	// A simple prompt for non-empty input
 	userInput.WriteString("hello\n") // To keep the test simple we have to provide user inputs up front
-	if result, err := actor.GetInput("Please enter something that's not empty", checkNotEmpty); err != nil {
+	if result, err := actor.Prompt("Please enter something that's not empty", checkNotEmpty); err != nil {
 		log.Fatal(err)
 	} else if result != "hello" {
 		log.Fatalf("Expected 'hello', got '%s'", result)
@@ -47,7 +47,7 @@ func Example() {
 
 	// A more complex example with the user retrying
 	userInput.WriteString("-2\ny\n5\n")
-	if result, err := actor.GetInputAndRetry("Please enter a positive number", checkNotEmpty, checkIsAPositiveNumber); err != nil {
+	if result, err := actor.PromptAndRetry("Please enter a positive number", checkNotEmpty, checkIsAPositiveNumber); err != nil {
 		log.Fatal(err)
 	} else if result != "5" {
 		log.Fatalf("Expected '5', got '%s'", result)
@@ -55,7 +55,7 @@ func Example() {
 
 	// An example with the user retrying and then opting to use the default value
 	userInput.WriteString("-2\ny\n\n")
-	if result, err := actor.GetInputWithDefaultAndRetry("Please enter another positive number", "7", checkNotEmpty, checkIsAPositiveNumber); err != nil {
+	if result, err := actor.PromptOptionalAndRetry("Please enter another positive number", "7", checkNotEmpty, checkIsAPositiveNumber); err != nil {
 		log.Fatal(err)
 	} else if result != "7" {
 		log.Fatalf("Expected '7', got '%s'", result)

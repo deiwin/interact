@@ -13,13 +13,13 @@ var (
 // InputCheck specifies the function signature for an input check
 type InputCheck func(string) error
 
-// GetInputAndRetry asks the user for input and performs the list of added checks
+// PromptAndRetry asks the user for input and performs the list of added checks
 // on the provided input. If any of the checks fail to pass the error will be
 // displayed to the user and they will then be asked if they want to try again.
 // If the user does not want to retry the program will return an error.
-func (a Actor) GetInputAndRetry(message string, checks ...InputCheck) (string, error) {
+func (a Actor) PromptAndRetry(message string, checks ...InputCheck) (string, error) {
 	for {
-		input, err := a.GetInput(message, checks...)
+		input, err := a.Prompt(message, checks...)
 		if err != nil {
 			if err = a.confirmRetry(err); err != nil {
 				return "", err
@@ -30,11 +30,11 @@ func (a Actor) GetInputAndRetry(message string, checks ...InputCheck) (string, e
 	}
 }
 
-// GetInputWithDefaultAndRetry works exactly like GetInputAndRetry, but also has
+// PromptOptionalAndRetry works exactly like GetInputAndRetry, but also has
 // a default option which will be used instead if the user simply presses enter.
-func (a Actor) GetInputWithDefaultAndRetry(message, fallback string, checks ...InputCheck) (string, error) {
+func (a Actor) PromptOptionalAndRetry(message, defaultOption string, checks ...InputCheck) (string, error) {
 	for {
-		input, err := a.GetInputWithDefault(message, fallback, checks...)
+		input, err := a.PromptOptional(message, defaultOption, checks...)
 		if err != nil {
 			if err = a.confirmRetry(err); err != nil {
 				return "", err
@@ -45,10 +45,10 @@ func (a Actor) GetInputWithDefaultAndRetry(message, fallback string, checks ...I
 	}
 }
 
-// GetInput asks the user for input and performs the list of added checks on the
+// Prompt asks the user for input and performs the list of added checks on the
 // provided input. If any of the checks fail, the error will be returned.
-func (a Actor) GetInput(message string, checks ...InputCheck) (string, error) {
-	input, err := a.getInput(message + ": ")
+func (a Actor) Prompt(message string, checks ...InputCheck) (string, error) {
+	input, err := a.prompt(message + ": ")
 	if err != nil {
 		return "", err
 	}
@@ -59,15 +59,15 @@ func (a Actor) GetInput(message string, checks ...InputCheck) (string, error) {
 	return input, nil
 }
 
-// GetInputWithDefault works exactly like GetInput, but also has a default option
+// PromptOptional works exactly like Prompt, but also has a default option
 // which will be used instead if the user simply presses enter.
-func (a Actor) GetInputWithDefault(message, fallback string, checks ...InputCheck) (string, error) {
-	input, err := a.getInput(fmt.Sprintf("%s: (%s) ", message, fallback))
+func (a Actor) PromptOptional(message, defaultOption string, checks ...InputCheck) (string, error) {
+	input, err := a.prompt(fmt.Sprintf("%s: (%s) ", message, defaultOption))
 	if err != nil {
 		return "", err
 	}
 	if input == "" {
-		return fallback, nil
+		return defaultOption, nil
 	}
 	err = runChecks(input, checks...)
 	if err != nil {
@@ -87,8 +87,8 @@ func (a Actor) confirmRetry(err error) error {
 	return nil
 }
 
-func (a Actor) getInput(prompt string) (string, error) {
-	fmt.Fprint(a.w, prompt)
+func (a Actor) prompt(message string) (string, error) {
+	fmt.Fprint(a.w, message)
 	line, err := a.rd.ReadString('\n')
 	if err != nil {
 		return "", err

@@ -11,14 +11,14 @@ import (
 
 var _ = Describe("Input", func() {
 	var message = "Please answer"
-	Describe("GetInputAndRetry", func() {
+	Describe("PromptAndRetry", func() {
 		Context("without any checks", func() {
 			BeforeEach(func() {
 				userInput = " user-input \n"
 			})
 
 			It("should return the trimmed input (just as without retry)", func() {
-				input, err := actor.GetInputAndRetry(message)
+				input, err := actor.PromptAndRetry(message)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(input).To(Equal("user-input"))
 				Eventually(output).Should(gbytes.Say(`Please answer: `))
@@ -50,13 +50,13 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the second (correct) input", func() {
-					input, err := actor.GetInputAndRetry(message, check)
+					input, err := actor.PromptAndRetry(message, check)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal("correct-input"))
 				})
 
 				It("should have correct prompts", func() {
-					actor.GetInputAndRetry(message, check)
+					actor.PromptAndRetry(message, check)
 					Eventually(output).Should(gbytes.Say(`Please answer: `))
 					Eventually(output).Should(gbytes.Say(`The first time fails!`))
 					Eventually(output).Should(gbytes.Say(`Do you want to try again\? \[y/N\]: `))
@@ -70,13 +70,13 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the second (correct) input", func() {
-					input, err := actor.GetInputAndRetry(message, check)
+					input, err := actor.PromptAndRetry(message, check)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal("correct-input"))
 				})
 
 				It("should have correct prompts", func() {
-					actor.GetInputAndRetry(message, check)
+					actor.PromptAndRetry(message, check)
 					Eventually(output).Should(gbytes.Say(`Please answer: `))
 					Eventually(output).Should(gbytes.Say(`The first time fails!`))
 					Eventually(output).Should(gbytes.Say(`Do you want to try again\? \[y/N\]: `))
@@ -88,14 +88,14 @@ var _ = Describe("Input", func() {
 		})
 	})
 
-	Describe("GetInput", func() {
+	Describe("Prompt", func() {
 		Context("with user input", func() {
 			BeforeEach(func() {
 				userInput = " user-input \n"
 			})
 
 			It("should return the trimmed input", func() {
-				input, err := actor.GetInput(message)
+				input, err := actor.Prompt(message)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(input).To(Equal("user-input"))
 				Eventually(output).Should(gbytes.Say(`Please answer: `))
@@ -119,13 +119,13 @@ var _ = Describe("Input", func() {
 					})
 
 					It("should return the error from the check", func() {
-						_, err := actor.GetInput(message, check)
+						_, err := actor.Prompt(message, check)
 						Expect(err).To(Equal(checkErr))
 					})
 
 					Context("with another check after the failed one", func() {
 						It("should not call the second check", func() {
-							actor.GetInput(message, check, func(input string) error {
+							actor.Prompt(message, check, func(input string) error {
 								Fail("should not be called")
 								return nil
 							})
@@ -139,7 +139,7 @@ var _ = Describe("Input", func() {
 					})
 
 					It("should not return an error", func() {
-						_, err := actor.GetInput(message, check)
+						_, err := actor.Prompt(message, check)
 						Expect(err).NotTo(HaveOccurred())
 					})
 				})
@@ -147,7 +147,7 @@ var _ = Describe("Input", func() {
 		})
 	})
 
-	Describe("GetInputWithDefault", func() {
+	Describe("PromptOptional", func() {
 		var def = "default value"
 		Context("without any checks", func() {
 			Context("with a simple input", func() {
@@ -156,7 +156,7 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the trimmed input", func() {
-					input, err := actor.GetInputWithDefault(message, def)
+					input, err := actor.PromptOptional(message, def)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal("user-input"))
 					Eventually(output).Should(gbytes.Say(`Please answer: `))
@@ -169,7 +169,7 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the default value", func() {
-					input, err := actor.GetInputWithDefault(message, def)
+					input, err := actor.PromptOptional(message, def)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal(def))
 					Eventually(output).Should(gbytes.Say(`Please answer: \(default value\) `))
@@ -182,7 +182,7 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the default value", func() {
-					input, err := actor.GetInputWithDefault(message, def)
+					input, err := actor.PromptOptional(message, def)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal(def))
 					Eventually(output).Should(gbytes.Say(`Please answer: \(default value\) `))
@@ -209,7 +209,7 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the default value (not run the check)", func() {
-					input, err := actor.GetInputWithDefault(message, def, check)
+					input, err := actor.PromptOptional(message, def, check)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal(def))
 					Eventually(output).Should(gbytes.Say(`Please answer: \(default value\) `))
@@ -228,13 +228,13 @@ var _ = Describe("Input", func() {
 					})
 
 					It("should return the error from the check", func() {
-						_, err := actor.GetInputWithDefault(message, def, check)
+						_, err := actor.PromptOptional(message, def, check)
 						Expect(err).To(Equal(checkErr))
 					})
 
 					Context("with another check after the failed one", func() {
 						It("should not call the second check", func() {
-							actor.GetInputWithDefault(message, def, check, func(input string) error {
+							actor.PromptOptional(message, def, check, func(input string) error {
 								Fail("should not be called")
 								return nil
 							})
@@ -248,7 +248,7 @@ var _ = Describe("Input", func() {
 					})
 
 					It("should not return an error", func() {
-						_, err := actor.GetInputWithDefault(message, def, check)
+						_, err := actor.PromptOptional(message, def, check)
 						Expect(err).NotTo(HaveOccurred())
 					})
 				})
@@ -256,7 +256,7 @@ var _ = Describe("Input", func() {
 		})
 	})
 
-	Describe("GetInputWithDefaultAndRetry", func() {
+	Describe("PromptOptionalAndRetry", func() {
 		var def = "default value"
 		Context("without any checks", func() {
 			BeforeEach(func() {
@@ -264,7 +264,7 @@ var _ = Describe("Input", func() {
 			})
 
 			It("should return the trimmed input (just as without retry)", func() {
-				input, err := actor.GetInputWithDefaultAndRetry(message, def)
+				input, err := actor.PromptOptionalAndRetry(message, def)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(input).To(Equal("user-input"))
 				Eventually(output).Should(gbytes.Say(`Please answer: `))
@@ -296,13 +296,13 @@ var _ = Describe("Input", func() {
 				})
 
 				It("should return the second (correct) input", func() {
-					input, err := actor.GetInputWithDefaultAndRetry(message, def, check)
+					input, err := actor.PromptOptionalAndRetry(message, def, check)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(input).To(Equal("correct-input"))
 				})
 
 				It("should have correct prompts", func() {
-					actor.GetInputWithDefaultAndRetry(message, def, check)
+					actor.PromptOptionalAndRetry(message, def, check)
 					Eventually(output).Should(gbytes.Say(`Please answer: \(default value\) `))
 					Eventually(output).Should(gbytes.Say(`The first time fails!`))
 					Eventually(output).Should(gbytes.Say(`Do you want to try again\? \[y/N\]: `))

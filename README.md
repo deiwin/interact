@@ -12,17 +12,17 @@ Code like this:
 actor := interact.NewActor(os.Stdin, os.Stdout)
 
 message := "Please enter something that's not empty"
-notEmpty, err := actor.GetInput(message, checkNotEmpty)
+notEmpty, err := actor.Prompt(message, checkNotEmpty)
 if err != nil {
   log.Fatal(err)
 }
 message = "Please enter a positive number"
-n1, err := actor.GetInputAndRetry(message, checkNotEmpty, checkIsAPositiveNumber)
+n1, err := actor.PromptAndRetry(message, checkNotEmpty, checkIsAPositiveNumber)
 if err != nil {
   log.Fatal(err)
 }
 message = "Please enter another positive number"
-n2, err := actor.GetInputWithDefaultAndRetry(message, "7", checkNotEmpty, checkIsAPositiveNumber)
+n2, err := actor.PromptOptionalAndRetry(message, "7", checkNotEmpty, checkIsAPositiveNumber)
 if err != nil {
   log.Fatal(err)
 }
