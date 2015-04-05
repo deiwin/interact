@@ -3,7 +3,7 @@ package interact_test
 import (
 	"errors"
 
-	"github.com/deiwin/luncher-api/lunchman/interact"
+	"github.com/deiwin/interact"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
