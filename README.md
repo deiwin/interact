@@ -8,7 +8,7 @@ A Golang utility belt for interacting with the user over a CLI
 ## Example interaction
 
 Code like this:
-```
+```go
 actor := interact.NewActor(os.Stdin, os.Stdout)
 
 message := "Please enter something that's not empty"
@@ -26,21 +26,11 @@ n2, err := actor.PromptOptionalAndRetry(message, "7", checkNotEmpty, checkIsAPos
 if err != nil {
   log.Fatal(err)
 }
-log.Printf("Thanks! (%s, %s, %s)\n", notEmpty, n1, n2)
+fmt.Printf("Thanks! (%s, %s, %s)\n", notEmpty, n1, n2)
 ```
 
 Can create an interaction like this:
-```
-Please enter something that's not empty: hello
-Please enter a positive number: -2
-The number can not be negative!
-Do you want to try again? [y/N]: y
-Please enter a positive number: 5
-Please enter another positive number: (7) -2
-The number can not be negative!
-Do you want to try again? [y/N]: y
-Please enter another positive number: (7)
-Thanks! (hello, 5, 7)
-```
+
+![asciicast](https://cloud.githubusercontent.com/assets/2261897/7066876/6194ec42-decf-11e4-823a-019f921f52a1.gif)
 
 For a more comprehensive example see the [example test](https://github.com/deiwin/interact/blob/master/example_test.go).
